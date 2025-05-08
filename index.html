@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Planner!</title>
+    <link rel="stylesheet" href="name.css">
+    <link rel="icon" type="image/png" href="logo1.png">
+    <style>
+        body{
+            background-image: url("agendaAchtergrond.png");
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-attachment: fixed;
+        }
+    </style>
+</head>
+<body>
+
+<div class="test2">
+    <center>
+        <h1 id="hello"></h1>
+        <h1>Agenda:</h1>
+    </center>
+
+<table id="agendaTable"></table>
+</div>
+<script>
+    function laadAgenda() {
+        fetch("https://script.google.com/macros/s/AKfycbywfUZTGozd5CXxTIaAR_8eHYQ1z0AOkOZszWjuCU9eXvuI1Aao92EO0KsQa4mtel-hsg/exec?formType=agenda")
+            .then(response => response.json())
+            .then(data => {
+                const table = document.getElementById("agendaTable");
+                table.innerHTML = ""; // leegmaken
+                console.log("Agenda data:", data);
+                data.forEach(row => {
+                    const tr = document.createElement("tr");
+                    tr.style.height = "100px";
+                    tr.innerHTML = `
+                    <td class="box4">${formatDatum(row.date)}</td>
+                    <td class="td_tussenstuk"></td>
+                    <td class="td_title"><h3>${row.title}</h3></td>
+                    <td class="td_description"><h4>${row.description}</h4></td>
+                    <td><h4>${formatTijd(row.start)} - ${formatTijd(row.end)}</h4></td>
+                `;
+
+                    table.appendChild(tr);
+
+                    const spacer = document.createElement("tr");
+                    spacer.classList.add("spaceUnder");
+                    spacer.innerHTML = "<td></td>";
+                    table.appendChild(spacer);
+                });
+            });
+    }
+
+    function formatDatum(datum) {
+        const options = { day: '2-digit', month: 'short' };
+        const date = new Date(datum);
+        return date.toLocaleDateString('nl-NL', options);
+    }
+
+    function formatTijd(value) {
+        const date = new Date(value);
+        if (isNaN(date)) return value; // fallback als parsing mislukt
+        return date.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Amsterdam' });
+    }
+
+    window.addEventListener("load", function (){
+        laadAgenda();
+        hello();
+        pageScroll();
+    });
+
+    function hello(){
+        var date = new Date();
+        var hour = date.getHours();
+        var hello;
+
+        if (hour < 12){
+            hello = "Goedemorgen!";
+        } else if (hour < 18){
+            hello = "Goedemiddag!";
+        } else {
+            hello = "Goedenavond!";
+        }
+
+        document.getElementById("hello").innerText = hello;
+    }
+
+    function login() {
+        window.location.href = "choice.html";
+    }
+
+    function pageScroll() {
+        window.scrollBy(0,1);
+        scrolldelay = setTimeout(pageScroll, 20);
+    }
+
+    setTimeout(function() {
+        window.location.href = "images.html";
+    }, 30000);
+
+</script>
+
+<img class="techport_logo" src="Techport_logo.png" onclick="login()" alt="">
+
+</body>
+</html>

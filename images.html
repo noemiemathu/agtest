@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Plaatjes Met Teksten</title>
+    <link rel="stylesheet" href="name.css">
+    <link rel="icon" type="image/png" href="logo1.png">
+    <style>
+        body{
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+    </style>
+</head>
+<body>
+<img class="techport_logo" src="Techport_logo.png" onclick="login()" alt="">
+
+<script>
+    function login() {
+        window.location.href = "choice.html";
+    }
+
+    const images = [
+        "images/thumbnail_1.jpg",
+        "images/thumbnail_2.jpg",
+        "images/thumbnail_3.jpg",
+        "images/thumbnail_4.jpg",
+        "images/thumbnail_5.jpg",
+        "images/thumbnail_6.jpg",
+        "images/thumbnail_7.jpg",
+    ];
+
+    const  randomImage = images[Math.floor(Math.random() * images.length)];
+
+    document.body.style.backgroundImage = `url('${randomImage}')`;
+
+    setTimeout(() => {
+        window.location.href = "welcome.html";
+    }, 10000);
+</script>
+
+</body>
+</html>
