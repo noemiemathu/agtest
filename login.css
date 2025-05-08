@@ -1,0 +1,54 @@
+.form{
+    position: fixed;
+    top: 50%;
+    left: 40%;
+    height: 500px;
+    width: 100%;
+}
+.text{
+    position: fixed;
+    top: 30%;
+    left: 40%;
+}
+.register{
+    color: #FFFFFF;
+}
+.button1{
+    position: absolute;
+    left: 23%;
+    top: 50%;
+    height: 38px;
+    width: 158px;
+    background-color: #84DCCF;
+    border-radius: 15px;
+    font-size: 1em;
+    border: none;
+    box-shadow: 0 5px #999;
+    cursor: pointer;
+}
+.button2{
+    position: absolute;
+    right: 45%;
+    top: 50%;
+    height: 38px;
+    width: 158px;
+    background-color: #84DCCF;
+    border-radius: 15px;
+    font-size: 1em;
+    border: none;
+    box-shadow: 0 5px #999;
+    cursor: pointer;
+}
+.button3{
+    position: absolute;
+    right: 23%;
+    top: 50%;
+    height: 38px;
+    width: 158px;
+    background-color: #84DCCF;
+    border-radius: 15px;
+    font-size: 1em;
+    border: none;
+    box-shadow: 0 5px #999;
+    cursor: pointer;
+}

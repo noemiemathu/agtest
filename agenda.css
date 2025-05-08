@@ -1,0 +1,17 @@
+.blok{
+    position: fixed;
+    top: 300px;
+    text-align: center;
+    justify-content: center;
+    left: 35%;
+}
+h1{
+    position: fixed;
+    top: 150px;
+    text-align: center;
+    justify-content: center;
+    left: 35%;
+}
+h2{
+    font-size: 40px;
+}

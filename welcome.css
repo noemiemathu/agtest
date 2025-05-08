@@ -1,0 +1,16 @@
+.blok{
+    height: 250px;
+    width: 100%;
+    position: fixed;
+}
+
+.header{
+    height: 200px;
+}
+
+body{
+    background-image: url("WelkomAchtergrond.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+}
