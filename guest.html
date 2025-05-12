@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gasten invoer</title>
+  <link rel="stylesheet" href="name.css">
+  <link rel="stylesheet" href="agenda.css">
+  <link rel="icon" type="image/png" href="logo1.png">
+</head>
+<body>
+<header class="test"></header>
+<div class="menu">
+  <img class="techport_logo" src="Techport_logo.png" onclick="choice()" alt="">
+</div>
+
+<center>
+  <h1>Invoeren Gasten:</h1>
+  <form class="blok" id="guestForm" enctype="multipart/form-data">
+    <label for="name">Naam:</label>
+    <input type="text" id="name" name="name">
+
+    <label for="company">Bedrijf:</label>
+    <input type="text" id="company" name="company"><br><br>
+
+    <label for="room">Ruimte:</label>
+    <input type="text" id="room" name="room">
+
+    <label for="date">Datum:</label>
+    <input type="date" id="date" name="date"><br><br>
+
+    <label for="time">Tijd:</label>
+    <input type="time" id="time" name="time">
+
+    <label for="extra">Extra informatie:</label>
+    <textarea id="extra" rows="4" cols="30" name="extra"></textarea>
+
+    <label>Logo:</label>
+    <input type="file" name="logo" accept="image/png" required><br><br>
+
+    <input type="submit" value="upload">
+  </form>
+</center>
+
+<script>
+  function choice(){
+    window.location.href = 'choice.html';
+  }
+
+  document.getElementById("guestForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    formData.append("formType", "gasten");
+
+    fetch("https://script.google.com/macros/s/AKfycbxOlZzE1oljc-ILiQvCjpSPY07N1ZTq6QCasgvJ82OonxAoxU5aGMmlZ4j_LJ15NFnd2Q/exec", {
+      method: "POST",
+      body: formData,
+    })
+            .then(async res => {
+              const text = await res.text();
+              try {
+                const json = JSON.parse(text);
+                alert("Gasten afspraak toegevoegd! ID: " + json.id);
+                window.location.href = "choice.html";
+              } catch (err) {
+                console.error("Geen geldige JSON:", text);
+                alert("Er ging iets mis: " + text);
+              }
+            })
+  })
+</script>
+</body>
+</html>

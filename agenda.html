@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Agenda</title>
+    <link rel="stylesheet" href="name.css">
+    <link rel="stylesheet" href="agenda.css">
+    <link rel="icon" type="image/png" href="logo1.png">
+</head>
+<body>
+<header class="test"></header>
+<div class="menu">
+    <img class="techport_logo" src="Techport_logo.png" onclick="choice()" alt="">
+</div>
+    <h1>Invoeren Agenda</h1>
+    <form class="blok" id="agendaForm">
+        <label for="title">Titel:</label>
+        <input type="text" id="title" name="title">
+
+        <label for="date">Datum:</label>
+        <input type="date" id="date" name="date"><br><br>
+
+        <label for="start">Van:</label>
+        <input type="time" id="start" name="start">
+
+        <label for="end">Tot:</label>
+        <input type="time" id="end" name="end"><br><br>
+
+        <label for="description">Omschrijving:</label>
+        <textarea id="description" rows="4" cols="30" name="description"></textarea><br><br>
+
+        <button type="submit">Toevoegen</button>
+    </form>
+
+<script>
+    function choice(){
+        window.location.href = 'choice.html';
+    }
+
+    document.getElementById("agendaForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+        const formData = new URLSearchParams(new FormData(e.target));
+        formData.append("formType", "agenda");
+
+        fetch("https://script.google.com/macros/s/AKfycbxOlZzE1oljc-ILiQvCjpSPY07N1ZTq6QCasgvJ82OonxAoxU5aGMmlZ4j_LJ15NFnd2Q/exec", {
+            method: "POST",
+            body: formData,
+        })
+            .then(async res => {
+                const text = await res.text();
+                try {
+                    const json = JSON.parse(text);
+                    alert("Agenda item toegevoegd! ID: " + json.id);
+                    window.location.href = "choice.html";
+                } catch (err) {
+                    console.error("Geen geldige JSON:", text);
+                    alert("Er ging iets mis: " + text);
+                }
+            })
+    })
+</script>
+</body>
+</html>
