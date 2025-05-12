@@ -28,19 +28,6 @@
 }
 .button2{
     position: absolute;
-    right: 45%;
-    top: 50%;
-    height: 38px;
-    width: 158px;
-    background-color: #84DCCF;
-    border-radius: 15px;
-    font-size: 1em;
-    border: none;
-    box-shadow: 0 5px #999;
-    cursor: pointer;
-}
-.button3{
-    position: absolute;
     right: 23%;
     top: 50%;
     height: 38px;
