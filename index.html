@@ -2,49 +2,177 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Planner!</title>
+    <title>Techport TV Display</title>
     <link rel="stylesheet" href="name.css">
+    <link rel="stylesheet" href="agenda.css">
+    <link rel="stylesheet" href="welcome.css">
+    <link rel="stylesheet" href="login.css">
     <link rel="icon" type="image/png" href="logo1.png">
     <style>
-        body{
-            background-image: url("agendaAchtergrond.png");
-            background-repeat: no-repeat;
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: sans-serif;
+        }
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+        .screen{
+            position: absolute;
+            top: 0; left: 0;
+            width: 100vw;
+            height: 100vh;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            pointer-events: none;
+        }
+        .active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .techport_logo {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            cursor: pointer;
+        }
+        #welcomeScreen {
+            background-image: url("WelkomAchtergrond.png");
             background-size: cover;
             background-attachment: fixed;
+        }
+        #agendaScreen {
+            background-image: url("agendaAchtergrond.png");
+            background-size: cover;
+            background-attachment: fixed;
+        }
+        #imageScreen {
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        table {
+            margin-top: 250px;
+        }
+        #agendaTable {
+            max-height: 60vh;
+            overflow-y: auto;
+            display: block;
+        }
+        #agendaContainer{
+            max-height: 60vh;
+            overflow-y: auto;
+            margin-top: 250px;
         }
     </style>
 </head>
 <body>
-
-<div class="test2">
-    <center>
-        <h1 id="hello"></h1>
-        <h1>Agenda:</h1>
-    </center>
-
-<table id="agendaTable"></table>
+<!-- Welkom-->
+<div class="screen active" id="welcomeScreen">
+    <img class="techport_logo" src="Techport_logo.png" onclick="login()" alt="">
+    <div id="welkomContent"></div>
 </div>
+
+<!-- Agenda -->
+<div class="screen" id="agendaScreen">
+    <img class="techport_logo" src="Techport_logo.png" onclick="login()" alt="">
+    <center>
+        <h1 id="hello"></h1><br><br>
+    </center>
+    <table id="agendaTable"></table>
+</div>
+
+<!-- Afbeeldingen -->
+<div class="screen" id="imageScreen">
+    <img class="techport_logo" src="Techport_logo.png" onclick="login()" alt="">
+</div>
+
 <script>
+    function login() {
+        window.location.href = "choice.html";
+    }
+
+    let screens = ["agendaScreen", "imageScreen", "welcomeScreen"];
+    let delays = [30000, 10000, 20000]
+    let current = 0;
+
+    function showScreen(index) {
+        screens.forEach((id, i) => {
+            const isActive = i === index;
+            document.getElementById(id).classList.toggle('active', isActive);
+
+            if (id === "agendaScreen") {
+                if (isActive) {
+                    startTableScroll();  // Scroll starten bij agenda
+                } else {
+                    stopTableScroll();   // Scroll stoppen bij andere schermen
+                }
+            }
+        });
+    }
+
+    function cycleScreens() {
+        showScreen(current);
+        const delay = delays[current];
+        current = (current + 1) % screens.length;
+        setTimeout(cycleScreens, delay);
+    }
+
+    // Afbeelding instellen
+    const images = [
+        "thumbnail_1.jpg", "thumbnail_2.jpg", "thumbnail_3.jpg",
+        "thumbnail_4.jpg", "thumbnail_5.jpg", "thumbnail_6.jpg"
+    ];
+    document.getElementById("imageScreen").style.backgroundImage = `url('${images[Math.floor(Math.random() * images.length)]}')`;
+
+    // Welkomdata ophalen
+    function checkAfspraken() {
+        fetch("https://script.google.com/macros/s/AKfycbxZUiUIzV5zusrYWcfZslxxDJ33hqnqsCthEVF36BP5kvzncIYihkzH3a1NcDZ_ZsJjKg/exec?formType=gasten")
+            .then(r => r.json())
+            .then(data => {
+                const vandaag = new Date();
+                const vandaagStr = vandaag.toISOString().split("T")[0];
+                const afsprakenVandaag = data.filter(item => item.date.includes(vandaagStr));
+
+                const container = document.getElementById("welkomContent");
+                container.innerHTML = "";
+                afsprakenVandaag.forEach(row => {
+                    const logoSrc = row.logo ? `<img class="logo" src="${row.logo}">` : "";
+                    container.innerHTML += `
+            <h1 style="margin-left: 230px;">Welkom ${row.name}</h1>
+            <table>
+              <tr><td>${logoSrc}</td><td>${row.company}</td><td>${row.room}</td><td>${row.extra}</td></tr>
+            </table>
+          `;
+                });
+            });
+    }
+
+    // Agenda ophalen
     function laadAgenda() {
+        startTableScroll();
         fetch("https://script.google.com/macros/s/AKfycbywfUZTGozd5CXxTIaAR_8eHYQ1z0AOkOZszWjuCU9eXvuI1Aao92EO0KsQa4mtel-hsg/exec?formType=agenda")
-            .then(response => response.json())
+            .then(r => r.json())
             .then(data => {
                 const table = document.getElementById("agendaTable");
-                table.innerHTML = ""; // leegmaken
-                console.log("Agenda data:", data);
+                table.innerHTML = "";
                 data.forEach(row => {
+                    const eindTijd = new Date(row.date);
+                    const nu = new Date();
+                    if (eindTijd < nu) {
+                        return; // sla dit item over als het al voorbij is
+                    }
                     const tr = document.createElement("tr");
                     tr.style.height = "100px";
                     tr.innerHTML = `
                     <td class="box4">${formatDatum(row.date)}</td>
-                    <td class="td_tussenstuk"></td>
+                    <td class="td_tussenstuk"> </td>
                     <td class="td_title"><h3>${row.title}</h3></td>
                     <td class="td_description"><h4>${row.description}</h4></td>
                     <td><h4>${formatTijd(row.start)} - ${formatTijd(row.end)}</h4></td>
                 `;
-
                     table.appendChild(tr);
-
                     const spacer = document.createElement("tr");
                     spacer.classList.add("spaceUnder");
                     spacer.innerHTML = "<td></td>";
@@ -52,7 +180,6 @@
                 });
             });
     }
-
     function formatDatum(datum) {
         const options = { day: '2-digit', month: 'short' };
         const date = new Date(datum);
@@ -65,44 +192,44 @@
         return date.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Amsterdam' });
     }
 
-    window.addEventListener("load", function (){
+
+    function hello() {
+        const uur = new Date().getHours();
+        let groet = "Goedenavond!";
+        if (uur < 12) groet = "Goedemorgen!";
+        else if (uur < 18) groet = "Goedemiddag!";
+        document.getElementById("hello").innerText = groet;
+    }
+
+    let scrollInterval;
+
+    function startTableScroll() {
+        const container = document.getElementById("agendaTable");
+        container.scrollTop = 0; // reset scrollpositie
+
+        scrollInterval = setInterval(() => {
+            container.scrollTop += 1;
+
+            // Reset naar boven als onderaan bereikt
+            if (container.scrollTop + container.clientHeight >= container.scrollHeight) {
+                container.scrollTop = 0;
+            }
+        }, 150); // pas dit aan voor snelheid
+    }
+
+    function stopTableScroll() {
+        clearInterval(scrollInterval);
+    }
+
+
+    // Start alles
+    window.addEventListener("load", () => {
+        checkAfspraken();
         laadAgenda();
         hello();
-        pageScroll();
+        showScreen(0);
+        cycleScreens();
     });
-
-    function hello(){
-        var date = new Date();
-        var hour = date.getHours();
-        var hello;
-
-        if (hour < 12){
-            hello = "Goedemorgen!";
-        } else if (hour < 18){
-            hello = "Goedemiddag!";
-        } else {
-            hello = "Goedenavond!";
-        }
-
-        document.getElementById("hello").innerText = hello;
-    }
-
-    function login() {
-        window.location.href = "choice.html";
-    }
-
-    function pageScroll() {
-        window.scrollBy(0,1);
-        scrolldelay = setTimeout(pageScroll, 20);
-    }
-
-    setTimeout(function() {
-        window.location.href = "images.html";
-    }, 30000);
-
 </script>
-
-<img class="techport_logo" src="Techport_logo.png" onclick="login()" alt="">
-
 </body>
 </html>
