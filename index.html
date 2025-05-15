@@ -60,10 +60,11 @@
             overflow-y: auto;
             display: block;
         }
-        #agendaContainer{
-            max-height: 60vh;
-            overflow-y: auto;
-            margin-top: 250px;
+        #agendaScreenContent {
+            display: flex;
+            align-items: center; /* Horizontaal centreren */
+            padding-top: 150px; /* Afstand van bovenkant */
+            width: 100%;
         }
     </style>
 </head>
@@ -71,16 +72,17 @@
 <!-- Welkom-->
 <div class="screen active" id="welcomeScreen">
     <img class="techport_logo" src="Techport_logo.png" onclick="login()" alt="">
+    <h1>Welkom bij Techport Innovation Centre </h1>
     <div id="welkomContent"></div>
 </div>
 
 <!-- Agenda -->
 <div class="screen" id="agendaScreen">
     <img class="techport_logo" src="Techport_logo.png" onclick="login()" alt="">
-    <center>
+    <div id="agendaScreenContent">
         <h1 id="hello"></h1><br><br>
-    </center>
-    <table id="agendaTable"></table>
+        <table id="agendaTable"></table>
+    </div>
 </div>
 
 <!-- Afbeeldingen -->
@@ -202,19 +204,26 @@
     }
 
     let scrollInterval;
+    let scrollDirection = 1; // 1 = naar beneden, -1 = naar boven
 
     function startTableScroll() {
         const container = document.getElementById("agendaTable");
-        container.scrollTop = 0; // reset scrollpositie
+        container.scrollTop = 0; // start bovenaan
+        scrollDirection = 1;     // begin naar beneden
 
         scrollInterval = setInterval(() => {
-            container.scrollTop += 1;
+            container.scrollTop += scrollDirection;
 
-            // Reset naar boven als onderaan bereikt
+            // Bereik onderkant?
             if (container.scrollTop + container.clientHeight >= container.scrollHeight) {
-                container.scrollTop = 0;
+                scrollDirection = -1; // omkeren: naar boven
             }
-        }, 300); // pas dit aan voor snelheid
+
+            // Bereik bovenkant?
+            if (container.scrollTop <= 0) {
+                scrollDirection = 1; // omkeren: naar beneden
+            }
+        }, 100); // Hoe hoger, hoe trager scroll
     }
 
     function stopTableScroll() {
