@@ -142,7 +142,7 @@
                 afsprakenVandaag.forEach(row => {
                     const logoSrc = row.logo ? `<img class="logo" src="${row.logo}">` : "";
                     container.innerHTML += `
-            <h1 style="margin-left: 230px;">Welkom ${row.name}</h1>
+            <h1 style="margin-left: 230px;"><br><br> ${row.name}</h1>
             <table>
               <tr><td>${logoSrc}</td><td>${row.company}</td><td>${row.room}</td><td>${row.extra}</td></tr>
             </table>
