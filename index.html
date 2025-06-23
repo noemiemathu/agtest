@@ -134,8 +134,11 @@
             .then(r => r.json())
             .then(data => {
                 const vandaag = new Date();
+                vandaag.setDate(vandaag.getDate() - 1)
                 const vandaagStr = vandaag.toISOString().split("T")[0];
-                const afsprakenVandaag = data.filter(item => item.date.includes(vandaagStr));
+                const afsprakenVandaag = data.filter(item => item.date && item.date.includes(vandaagStr));
+
+                console.log(afsprakenVandaag);
 
                 const container = document.getElementById("welkomContent");
                 container.innerHTML = "";
